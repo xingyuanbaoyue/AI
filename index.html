@@ -5,7 +5,448 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>星原澄日 - AI VTuber聊天助手</title>
     <style>
-        /* 保持原有样式不变 */
+        /* 基础样式 */
+        :root {
+            --primary-color: #6a5acd;
+            --secondary-color: #9370db;
+            --accent-color: #ff69b4;
+            --background-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --card-gradient: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            --button-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            --success-gradient: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+            --text-color: #333;
+            --light-text: #f8f9fa;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+        }
+        
+        body {
+            background: var(--background-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        /* 飘星背景 */
+        #starsContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        /* 容器样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            color: var(--light-text);
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: var(--card-gradient);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* VTuber信息卡片 */
+        .vtuber-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .vtuber-name {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(106, 90, 205, 0.1);
+            border-radius: 15px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            margin-right: 10px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        /* 聊天容器 */
+        .chat-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(106, 90, 205, 0.2);
+            color: var(--primary-color);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 500px;
+            padding-right: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            max-width: 85%;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background: rgba(106, 90, 205, 0.1);
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .ai-message {
+            background: rgba(255, 105, 180, 0.1);
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid rgba(106, 90, 205, 0.3);
+            border-radius: 15px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .chat-input:focus {
+            border-color: var(--primary-color);
+        }
+        
+        .send-btn {
+            background: var(--button-gradient);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 0 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(106, 90, 205, 0.4);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .loading {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 配置面板 */
+        .config-panel {
+            margin-top: 30px;
+        }
+        
+        .config-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        
+        .config-group {
+            margin-bottom: 20px;
+        }
+        
+        .config-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .config-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(106, 90, 205, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .config-input:focus {
+            border-color: var(--primary-color);
+        }
+        
+        .save-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--card-gradient);
+            color: var(--text-color);
+            border: 2px solid rgba(106, 90, 205, 0.3);
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .save-btn:hover {
+            background: var(--button-gradient);
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* 信息面板 */
+        .info-panel {
+            background: rgba(255, 245, 245, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--accent-color);
+        }
+        
+        .info-header {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: var(--accent-color);
+        }
+        
+        .info-list {
+            padding-left: 25px;
+            margin: 15px 0;
+        }
+        
+        .info-list li {
+            margin-bottom: 8px;
+        }
+        
+        .code {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            font-family: monospace;
+            padding: 5px 10px;
+            margin: 5px 0;
+            display: inline-block;
+        }
+        
+        .highlight {
+            background: linear-gradient(transparent 60%, rgba(255, 105, 180, 0.3) 40%);
+            font-weight: bold;
+        }
+        
+        /* 部署指南 */
+        .deploy-guide {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .guide-title {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+        }
+        
+        .guide-steps {
+            counter-reset: step-counter;
+        }
+        
+        .guide-step {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 70px;
+        }
+        
+        .guide-step:before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background: var(--button-gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .guide-step h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .guide-content {
+            padding-left: 10px;
+        }
+        
+        .guide-content p {
+            margin-bottom: 10px;
+        }
+        
+        .guide-code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+        
+        .terminal {
+            position: relative;
+        }
+        
+        .terminal:before {
+            content: "Terminal";
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #e4e4e4;
+            color: #555;
+            padding: 5px 10px;
+            border-radius: 5px 0 5px 0;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -109,9 +550,6 @@
             </div>
         </div>
         
-        <!-- 保持原有的部署指南部分 -->
-    </div>
-
     <script>
         // 配置管理
         let config = {
@@ -122,7 +560,27 @@
 
         // 创建飘星背景
         function createStars() {
-            // 保持原有实现
+            const container = document.getElementById('starsContainer');
+            const starCount = 150;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // 随机位置和大小
+                const size = Math.random() * 3;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 5;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+                star.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(star);
+            }
         }
         
         // 加载配置
@@ -230,12 +688,24 @@
         
         // 添加消息
         function addMessage(content, isUser = false) {
-            // 保持原有实现
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
+            messageDiv.textContent = content;
+            messagesContainer.appendChild(messageDiv);
+            
+            // 自动滚动到底部
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
         
         // 语言检测
         function detectLanguage(text) {
-            // 保持原有实现
+            // 简单检测日语
+            if (/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(text)) {
+                return /[\u3040-\u309F]/.test(text) ? '日本語' : '中文';
+            }
+            return 'English';
         }
         
         // 发送消息
