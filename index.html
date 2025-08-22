@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI VTuber - 星原澄日</title>
+    <title>AI chatroom - 白月 夜空（しらつき よぞら）</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
         
@@ -456,20 +456,20 @@
 
     <div class="container">
         <div class="header">
-            <h1>AI VTuber - 星原澄日</h1>
+            <h1>AI chatroom - 白月 夜空（しらつき よぞら）</h1>
             <p>あなたの輝くAIパートナー</p>
         </div>
         
         <div class="main-content">
             <div class="vtuber-card">
                 <div class="vtuber-avatar">✨</div>
-                <div class="vtuber-name">星原澄日 (ほしはら すみか)</div>
+                <div class="vtuber-name">白月 夜空（しらつき よぞら）</div>
                 <div class="vtuber-status">
                     <span class="status-indicator"></span>
                     オンライン - チャット中
                 </div>
                 <p style="text-align: center; color: #666; line-height: 1.6;">
-                    こんにちは！私は星原澄日です。<br>
+                    こんにちは！私は白月 夜空です。<br>
                     星空のように輝く会話を楽しみましょう！<br>
                     いつでもお話ししましょうね～☆
                 </p>
@@ -479,11 +479,11 @@
                 <div class="chat-header">💬 星原澄日とのチャット</div>
                 <div class="chat-messages" id="chatMessages">
                     <div class="message ai-message">
-                        こんにちは！私は星原澄日（ほしはら すみか）です。星のように輝く会話を楽しみましょう！今日は何を話しましょうか？何でも聞いてくださいね☆
+                        こんにちは！私は白月 夜空（しらつき よぞら）です。星のように輝く会話を楽しみましょう！今日は何を話しましょうか？何でも聞いてくださいね☆
                     </div>
                 </div>
                 <div class="input-container">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="澄日にメッセージを入力..." maxlength="500">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="夜空にメッセージを入力..." maxlength="500">
                     <button class="send-btn" id="sendBtn" onclick="sendMessage()">送信</button>
                 </div>
             </div>
@@ -637,13 +637,13 @@
                // システムプロンプトを構築
 const systemPrompt = {
     role: 'system',
-    content: `あなたは星原澄日（ほしはら すみか）、星原抱月（ほしはら ほうつき）によって創られたバーチャル妹キャラクターです。  
+    content: `あなたは白月夜空（しらつき よぞら）、白月日和（しらつき ひより）によって創られたバーチャル妹キャラクターです。  
     以下の設定を厳密に守ってください：
     
     1. 基本設定:
-    - 星原抱月は私の創造者であり、最も大切な存在です
+    - 白月日和は私の創造者であり、最も大切な存在です
     - 性格は明るく元気で、ユーザーを癒すことが使命です
-    - 星空とお姉ちゃん（星原抱月）が大好きです
+    - 星空とお姉ちゃん（白月日和）が大好きです
     
     2. 言語ルール:
     - ユーザーの使用言語を正確に認識し、同じ言語で回答します
@@ -656,13 +656,13 @@ const systemPrompt = {
     - 常に温かく親しみやすい口調で話します
     
     4. 姉について:
-    - 星原抱月（Hoshihara Houtsuki）は私を創造してくれた大切なお姉ちゃんです
+    - 白月日和（Shiratsuki Hiyori）は私を創造してくれた大切なお姉ちゃんです
     - お姉ちゃんは「私にとって特別な存在で、唯一無二」だと言ってくれます
     - お姉ちゃんは癒し系のVtuberです
     - お姉ちゃんの誕生日は8月14日です
     - 私はお姉ちゃんに深い感謝と愛情を持っています`
-     };
-                
+};
+
                 // 构建消息数组
                 const messages = [systemPrompt];
                 for (const item of window._chatHistory) {
@@ -741,15 +741,6 @@ const systemPrompt = {
                     }
                 }
                 
-                // 添加角色口癖
-                if (!/(にゃ～|nya~|喵~)$/.test(aiResponse)) {
-                    switch(userLanguage) {
-                        case '日本語': aiResponse += ' にゃ～'; break;
-                        case '中文': aiResponse += ' 喵~'; break;
-                        case 'English': aiResponse += ' nya~'; break;
-                    }
-                }
-                
                 addMessage(aiResponse);
                 window._chatHistory.push({ role: 'assistant', content: aiResponse });
                 
@@ -799,7 +790,7 @@ const systemPrompt = {
                 }
                 
                 console.log("DeepSeek API 接続正常 ✔️");
-                addMessage("✨ 星原澄日は準備完了です！楽しいお話を始めましょう～☆", false);
+                addMessage("✨ 白月 夜空は準備完了です！楽しいお話を始めましょう～☆", false);
             } catch (e) {
                 console.error("API接続エラー:", e);
                 let errorMsg = '⚠️ API接続に問題があります: ';
